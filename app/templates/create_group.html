@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block title %}Create Group | Digital Susu{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="max-w-lg mx-auto">
+        <div class="card shadow-xl">
+            <!-- Header -->
+            <div class="bg-gradient-to-r from-green-500 to-green-600 p-8 text-center rounded-t-2xl -mt-8 -mx-8 mb-8">
+                <h2 class="text-2xl font-bold mb-2 text-white">Create New Susu Group</h2>
+                <p class="text-green-100 text-lg">Start a new savings group and invite friends to join</p>
+            </div>
+            
+            <!-- Form -->
+            <form method="POST" action="{{ url_for('groups.create_group') }}" class="px-8">
+                {{ form.csrf_token }}
+                
+                <div class="mb-6">
+                    {{ form.name.label(class="block text-gray-700 font-semibold mb-2 text-sm") }}
+                    {{ form.name(class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors", placeholder="Enter group name") }}
+                    {% if form.name.errors %}
+                        <div class="mt-2">
+                            {% for error in form.name.errors %}
+                                <p class="text-red-500 text-sm">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <div class="mb-6">
+                    {{ form.description.label(class="block text-gray-700 font-semibold mb-2 text-sm") }}
+                    {{ form.description(class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors", placeholder="Describe your group", style="height: 100px; resize: vertical;") }}
+                    {% if form.description.errors %}
+                        <div class="mt-2">
+                            {% for error in form.description.errors %}
+                                <p class="text-red-500 text-sm">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <div class="mb-6">
+                    {{ form.cycle_size.label(class="block text-gray-700 font-semibold mb-2 text-sm") }}
+                    {{ form.cycle_size(class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors", placeholder="Number of members", type="number", min="2", max="50") }}
+                    {% if form.cycle_size.errors %}
+                        <div class="mt-2">
+                            {% for error in form.cycle_size.errors %}
+                                <p class="text-red-500 text-sm">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    <p class="text-gray-500 text-xs mt-1">Number of members in the group (including yourself)</p>
+                </div>
+                
+                <div class="mb-8">
+                    {{ form.weekly_amount.label(class="block text-gray-700 font-semibold mb-2 text-sm") }}
+                    {{ form.weekly_amount(class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors", placeholder="Weekly contribution amount", type="number", step="0.01", min="1") }}
+                    {% if form.weekly_amount.errors %}
+                        <div class="mt-2">
+                            {% for error in form.weekly_amount.errors %}
+                                <p class="text-red-500 text-sm">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    <p class="text-gray-500 text-xs mt-1">Amount each member contributes weekly</p>
+                </div>
+                
+                <div class="mb-8">
+                    <button type="submit" class="btn-primary w-full text-lg py-4">
+                        Create Group
+                    </button>
+                </div>
+            </form>
+            
+            <!-- Back Link -->
+            <div class="text-center pb-8">
+                <a href="{{ url_for('dashboard.index') }}" class="text-green-600 font-semibold text-sm flex items-center justify-center hover:text-green-700 transition-colors">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                    </svg>
+                    Back to Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

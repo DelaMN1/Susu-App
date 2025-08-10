@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+{% block title %}Transaction History | Digital Susu{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="mb-8">
+        <h1 class="text-2xl md:text-3xl font-bold mb-2 text-gray-900">Transaction History</h1>
+        <p class="text-lg text-gray-600">View all your past transactions and contributions</p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <!-- Recent Transactions -->
+        <div class="card shadow-lg">
+            <div class="mb-6">
+                <h2 class="text-xl md:text-2xl font-bold mb-2 text-gray-900">Recent Transactions</h2>
+                <p class="text-gray-600 text-sm">Your latest contributions and payouts</p>
+            </div>
+            
+            {% if recent_transactions %}
+                <div class="space-y-4">
+                    {% for transaction in recent_transactions %}
+                    <div class="bg-gray-50 rounded-xl border border-gray-200 p-4 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
+                        <div class="flex-1">
+                            <h3 class="font-semibold text-gray-900 mb-1">{{ transaction.group_name }}</h3>
+                            <p class="text-gray-600 text-sm">{{ transaction.date }}</p>
+                        </div>
+                        <div class="text-left lg:text-right">
+                            <p class="text-xl font-bold text-green-600 mb-2">{{ transaction.amount }}</p>
+                            <span class="bg-green-500 text-white px-3 py-1 rounded-full text-xs font-semibold">{{ transaction.type|title }}</span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="text-center py-12 px-6 text-gray-500">
+                    <svg class="w-12 h-12 mx-auto mb-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    <p class="text-lg mb-2">No recent transactions</p>
+                    <p class="text-sm">Your transaction history will appear here</p>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Monthly Summary -->
+        <div class="card shadow-lg">
+            <div class="mb-6">
+                <h2 class="text-xl md:text-2xl font-bold mb-2 text-gray-900">Monthly Summary</h2>
+                <p class="text-gray-600 text-sm">Overview of your savings activity</p>
+            </div>
+            
+            {% if monthly_summary %}
+                <div class="space-y-4">
+                    <div class="bg-gray-50 rounded-xl border border-gray-200 p-4 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
+                        <div class="flex-1">
+                            <h3 class="font-semibold text-gray-900 mb-1">Total Contributions</h3>
+                            <p class="text-gray-600 text-sm">This month</p>
+                        </div>
+                        <div class="text-left lg:text-right">
+                            <p class="text-xl font-bold text-green-600 mb-2">{{ monthly_summary.total_contributions }}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-gray-50 rounded-xl border border-gray-200 p-4 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
+                        <div class="flex-1">
+                            <h3 class="font-semibold text-gray-900 mb-1">Total Payouts</h3>
+                            <p class="text-gray-600 text-sm">This month</p>
+                        </div>
+                        <div class="text-left lg:text-right">
+                            <p class="text-xl font-bold text-yellow-600 mb-2">{{ monthly_summary.total_payouts }}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-gray-50 rounded-xl border border-gray-200 p-4 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
+                        <div class="flex-1">
+                            <h3 class="font-semibold text-gray-900 mb-1">Active Groups</h3>
+                            <p class="text-gray-600 text-sm">Currently participating</p>
+                        </div>
+                        <div class="text-left lg:text-right">
+                            <p class="text-xl font-bold text-blue-600 mb-2">{{ monthly_summary.active_groups }}</p>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="text-center py-12 px-6 text-gray-500">
+                    <svg class="w-12 h-12 mx-auto mb-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                    </svg>
+                    <p class="text-lg mb-2">No summary available</p>
+                    <p class="text-sm">Monthly summary will appear here</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %} 

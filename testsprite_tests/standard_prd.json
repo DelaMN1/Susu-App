@@ -1,0 +1,172 @@
+{
+  "meta": {
+    "project": "Digital Susu & Group Savings Platform",
+    "date": "2025-07-30",
+    "prepared_by": "Software Development Manager"
+  },
+  "product_overview": "A modern web-based platform digitizing the traditional Susu savings system, enabling users to create and join savings groups, track contributions and payouts, manage memberships, and view transaction histories with a secure and mobile-responsive interface.",
+  "core_goals": [
+    "Enable users to securely register, log in, and manage their accounts within the platform.",
+    "Allow users to create, join, and manage Susu savings groups efficiently through an intuitive lifecycle system.",
+    "Facilitate seamless tracking of weekly contributions and payouts within groups to maintain financial transparency.",
+    "Provide users with a centralized dashboard showing their groups, activities, and quick feature access.",
+    "Ensure a responsive, user-friendly interface that works across devices using modern UI frameworks."
+  ],
+  "key_features": [
+    "Complete user authentication with registration, login, logout, password hashing, and session management.",
+    "User dashboard displaying joined groups, recent activities, and quick navigation links.",
+    "Comprehensive group management including creation, joining, lifecycle state management, and member invitations via email tokens.",
+    "Payment processing module to track weekly contributions and disbursements within savings groups.",
+    "Detailed transaction history for transparency on all group financial activities.",
+    "User profile management allowing edits to personal and contact information.",
+    "Mobile-responsive, modern UI design built with TailwindCSS ensuring accessibility across devices.",
+    "Secure form validation with CSRF protection using Flask-WTF.",
+    "Robust backend built with Flask utilizing SQLAlchemy ORM for database operations."
+  ],
+  "user_flow_summary": [
+    "Users register for an account, verify credentials, and log in securely.",
+    "Upon login, users land on a dashboard summarizing their groups and recent activities.",
+    "Users can create new Susu savings groups or join existing ones via invitations.",
+    "Group creators manage group members, track contributions, and oversee group lifecycle stages.",
+    "Members make weekly contributions recorded by the system and receive payout notifications.",
+    "Users review past transactions and group activities via history views.",
+    "Users can update their profile settings and manage authentication information as needed."
+  ],
+  "validation_criteria": [
+    "All user authentication flows must be secure with password hashing and prevent unauthorized access.",
+    "Users must be able to successfully create, join, and leave groups, with group states handled correctly by the state machine.",
+    "Payment records must accurately reflect contributions and disbursements with no data loss.",
+    "Email invitations to group members must generate valid tokens and enable recipients to join groups securely.",
+    "The dashboard and other UI pages must be responsive and functional across major browsers and devices.",
+    "Data submitted through forms must be validated and CSRF-protected to prevent attacks.",
+    "User profile changes must persist correctly and update the database accordingly.",
+    "Application must handle error cases gracefully with appropriate user feedback and logging."
+  ],
+  "code_summary": {
+    "tech_stack": [
+      "Python",
+      "Flask",
+      "SQLite",
+      "HTML",
+      "TailwindCSS",
+      "JavaScript",
+      "Jinja2",
+      "Flask-Login",
+      "Flask-WTF",
+      "Flask-Migrate",
+      "SQLAlchemy"
+    ],
+    "features": [
+      {
+        "name": "User Authentication",
+        "description": "Complete user registration, login, logout functionality with password hashing and session management",
+        "files": [
+          "app/auth/routes.py",
+          "app/auth/forms.py",
+          "app/templates/login.html",
+          "app/templates/register.html",
+          "app/models.py"
+        ]
+      },
+      {
+        "name": "User Dashboard",
+        "description": "Main dashboard showing user's groups, recent activity, and quick access to key features",
+        "files": [
+          "app/dashboard/routes.py",
+          "app/templates/dashboard.html"
+        ]
+      },
+      {
+        "name": "Group Management",
+        "description": "Create, join, and manage Susu savings groups with state machine for group lifecycle",
+        "files": [
+          "app/groups/routes.py",
+          "app/groups/forms.py",
+          "app/groups/fsm.py",
+          "app/templates/create_group.html",
+          "app/templates/my_groups.html",
+          "app/templates/view_group.html",
+          "app/models.py"
+        ]
+      },
+      {
+        "name": "Group Invitations",
+        "description": "Invite members to groups via email with invitation tokens and management interface",
+        "files": [
+          "app/templates/invite_members.html",
+          "app/templates/view_invitations.html",
+          "app/templates/join_via_invitation.html",
+          "app/models.py"
+        ]
+      },
+      {
+        "name": "Payment Processing",
+        "description": "Track and manage weekly contributions and disbursements within groups",
+        "files": [
+          "app/payments/routes.py",
+          "app/templates/payments/",
+          "app/models.py"
+        ]
+      },
+      {
+        "name": "Transaction History",
+        "description": "View detailed history of all transactions, contributions, and group activities",
+        "files": [
+          "app/history/routes.py",
+          "app/templates/history/"
+        ]
+      },
+      {
+        "name": "User Profile Management",
+        "description": "Edit user profile information, contact details, and account settings",
+        "files": [
+          "app/profile/routes.py",
+          "app/templates/profile/"
+        ]
+      },
+      {
+        "name": "Landing Page",
+        "description": "Modern responsive homepage showcasing the platform features and benefits",
+        "files": [
+          "app/main/__init__.py",
+          "app/templates/index.html"
+        ]
+      },
+      {
+        "name": "Database Models",
+        "description": "Comprehensive data models for users, groups, memberships, transactions, and invitations",
+        "files": [
+          "app/models.py",
+          "migrations/"
+        ]
+      },
+      {
+        "name": "Frontend Styling",
+        "description": "Responsive UI with TailwindCSS for modern and mobile-friendly design",
+        "files": [
+          "app/static/css/",
+          "app/templates/base.html",
+          "tailwind.config.js"
+        ]
+      },
+      {
+        "name": "Application Configuration",
+        "description": "Flask application factory pattern with environment-based configuration",
+        "files": [
+          "app/__init__.py",
+          "app/config.py",
+          "app/extensions.py",
+          "run.py"
+        ]
+      },
+      {
+        "name": "Form Validation",
+        "description": "Flask-WTF forms with CSRF protection for secure data submission",
+        "files": [
+          "app/auth/forms.py",
+          "app/groups/forms.py"
+        ]
+      }
+    ]
+  }
+}

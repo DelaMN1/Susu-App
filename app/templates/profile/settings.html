@@ -1,0 +1,210 @@
+{% extends "base.html" %}
+
+{% block title %}Profile Settings | Digital Susu{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="mb-8">
+        <h1 class="text-2xl md:text-3xl font-bold mb-2 text-gray-900">Profile Settings</h1>
+        <p class="text-lg text-gray-600">Manage your account information and preferences</p>
+    </div>
+
+    <div 
+        x-data="{ 
+            showPasswordSection: false,
+            passwordStrength: 0,
+            passwordMatch: false,
+            showSuccessMessage: false
+        }"
+        class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <!-- Profile Summary -->
+        <div class="card shadow-lg">
+            <div class="text-center mb-6">
+                <div class="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4 text-white font-bold text-2xl">
+                    {{ user.full_name[0] if user.full_name else 'U' }}
+                </div>
+                <h2 class="text-xl font-bold mb-1 text-gray-900">{{ user.full_name }}</h2>
+                <p class="text-gray-600 text-sm">Member since {{ user.created_at.strftime('%B %Y') }}</p>
+            </div>
+            
+            <div class="border-t border-gray-200 pt-4">
+                <div class="mb-3">
+                    <p class="text-gray-600 text-xs mb-1">Email</p>
+                    <p class="text-gray-900 text-sm font-medium">{{ user.email }}</p>
+                </div>
+                <div class="mb-3">
+                    <p class="text-gray-600 text-xs mb-1">Phone</p>
+                    <p class="text-gray-900 text-sm font-medium">{{ user.phone }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings Form -->
+        <div class="card shadow-lg">
+            <h2 class="text-xl md:text-2xl font-bold mb-6 text-gray-900">Edit Profile</h2>
+            
+            <form method="POST" action="{{ url_for('profile.update_settings') }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                
+                <!-- Personal Information -->
+                <div class="mb-8">
+                    <h3 class="text-lg font-semibold mb-4 text-gray-900">Personal Information</h3>
+                    
+                    <div class="mb-5">
+                        <label for="full_name" class="block text-gray-700 font-semibold mb-2 text-sm">
+                            Full Name
+                        </label>
+                        <input type="text" id="full_name" name="full_name" value="{{ user.full_name }}" 
+                               class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors" 
+                               placeholder="Enter your full name" required>
+                    </div>
+                    
+                    <div class="mb-5">
+                        <label for="email" class="block text-gray-700 font-semibold mb-2 text-sm">
+                            Email Address
+                        </label>
+                        <input type="email" id="email" name="email" value="{{ user.email }}" 
+                               class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors" 
+                               placeholder="Enter your email" required>
+                    </div>
+                    
+                    <div class="mb-5">
+                        <label for="phone" class="block text-gray-700 font-semibold mb-2 text-sm">
+                            Phone Number
+                        </label>
+                        <input type="tel" id="phone" name="phone" value="{{ user.phone }}" 
+                               class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors" 
+                               placeholder="Enter your phone number" required>
+                    </div>
+                </div>
+                
+                <!-- Change Password -->
+                <div class="mb-8">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-gray-900">Change Password</h3>
+                        <button 
+                            @click="showPasswordSection = !showPasswordSection"
+                            type="button"
+                            class="text-green-600 hover:text-green-700 font-semibold text-sm">
+                            <span x-show="!showPasswordSection">Show</span>
+                            <span x-show="showPasswordSection">Hide</span>
+                        </button>
+                    </div>
+                    
+                    <div 
+                        x-show="showPasswordSection"
+                        x-transition:enter="transition ease-out duration-300"
+                        x-transition:enter-start="opacity-0 transform -translate-y-2"
+                        x-transition:enter-end="opacity-100 transform translate-y-0"
+                        x-transition:leave="transition ease-in duration-200"
+                        x-transition:leave-start="opacity-100 transform translate-y-0"
+                        x-transition:leave-end="opacity-0 transform -translate-y-2"
+                        class="space-y-4">
+                        
+                        <p class="text-gray-600 text-sm">Leave blank if you don't want to change your password</p>
+                    
+                    <div class="mb-5">
+                        <label for="current_password" class="block text-gray-700 font-semibold mb-2 text-sm">
+                            Current Password
+                        </label>
+                        <input type="password" id="current_password" name="current_password" 
+                               class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors" 
+                               placeholder="Enter your current password">
+                    </div>
+                    
+                    <div class="mb-5">
+                        <label for="new_password" class="block text-gray-700 font-semibold mb-2 text-sm">
+                            New Password
+                        </label>
+                        <input 
+                            type="password" 
+                            id="new_password" 
+                            name="new_password" 
+                            @input="
+                                const password = $event.target.value;
+                                passwordStrength = password.length >= 8 ? (password.match(/[A-Z]/) ? 1 : 0) + (password.match(/[a-z]/) ? 1 : 0) + (password.match(/[0-9]/) ? 1 : 0) + (password.match(/[^A-Za-z0-9]/) ? 1 : 0) : 0;
+                            "
+                            class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors" 
+                            placeholder="Enter your new password">
+                        
+                        <!-- Password Strength Indicator -->
+                        <div class="mt-2" x-show="$event.target.value.length > 0">
+                            <div class="flex gap-1">
+                                <div class="h-1 flex-1 rounded-full" 
+                                     :class="passwordStrength >= 1 ? 'bg-red-500' : 'bg-gray-200'"></div>
+                                <div class="h-1 flex-1 rounded-full" 
+                                     :class="passwordStrength >= 2 ? 'bg-yellow-500' : 'bg-gray-200'"></div>
+                                <div class="h-1 flex-1 rounded-full" 
+                                     :class="passwordStrength >= 3 ? 'bg-blue-500' : 'bg-gray-200'"></div>
+                                <div class="h-1 flex-1 rounded-full" 
+                                     :class="passwordStrength >= 4 ? 'bg-green-500' : 'bg-gray-200'"></div>
+                            </div>
+                            <p class="text-xs mt-1" 
+                               :class="passwordStrength >= 4 ? 'text-green-600' : passwordStrength >= 2 ? 'text-yellow-600' : 'text-red-600'"
+                               x-text="passwordStrength >= 4 ? 'Strong' : passwordStrength >= 2 ? 'Medium' : 'Weak'">
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-5">
+                        <label for="confirm_password" class="block text-gray-700 font-semibold mb-2 text-sm">
+                            Confirm New Password
+                        </label>
+                        <input 
+                            type="password" 
+                            id="confirm_password" 
+                            name="confirm_password" 
+                            @input="passwordMatch = $event.target.value === document.getElementById('new_password').value"
+                            class="w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors" 
+                            :class="passwordMatch ? 'border-green-500' : 'border-gray-300'"
+                            placeholder="Confirm your new password">
+                        
+                        <!-- Password Match Indicator -->
+                        <div class="mt-2" x-show="$event.target.value.length > 0">
+                            <p class="text-xs" 
+                               :class="passwordMatch ? 'text-green-600' : 'text-red-600'"
+                               x-text="passwordMatch ? 'Passwords match!' : 'Passwords do not match'">
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Notification Settings -->
+                <div class="mb-8">
+                    <h3 class="text-lg font-semibold mb-4 text-gray-900">Notification Settings</h3>
+                    
+                    <div class="space-y-4">
+                        <label class="flex items-center gap-3 cursor-pointer">
+                            <input type="checkbox" name="email_notifications" checked 
+                                   class="w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 focus:ring-2">
+                            <span class="text-sm text-gray-700">Email notifications for payments and updates</span>
+                        </label>
+                        
+                        <label class="flex items-center gap-3 cursor-pointer">
+                            <input type="checkbox" name="sms_notifications" 
+                                   class="w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 focus:ring-2">
+                            <span class="text-sm text-gray-700">SMS notifications for important alerts</span>
+                        </label>
+                        
+                        <label class="flex items-center gap-3 cursor-pointer">
+                            <input type="checkbox" name="payment_reminders" checked 
+                                   class="w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 focus:ring-2">
+                            <span class="text-sm text-gray-700">Payment reminders and due date alerts</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- Form Actions -->
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <button type="submit" class="btn-primary flex-1">
+                        Save Changes
+                    </button>
+                    <button type="button" class="btn-secondary flex-1">
+                        Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %} 

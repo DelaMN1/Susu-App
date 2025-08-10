@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+
+{% block title %}Join Group | Digital Susu{% endblock %}
+
+{% block content %}
+<div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-white to-primary-50/30 py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-2xl w-full space-y-8">
+        <!-- Header -->
+        <div class="text-center">
+            <div class="flex justify-center items-center mb-6">
+                <div class="w-16 h-16 bg-gradient-to-br from-primary-500 to-accent-500 rounded-2xl flex items-center justify-center shadow-lg">
+                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                </div>
+            </div>
+            <h1 class="text-3xl font-bold text-text-primary mb-2">You're Invited!</h1>
+            <p class="text-text-secondary text-lg">Join "{{ group.name }}" Susu Group</p>
+        </div>
+
+        <!-- Group Details Card -->
+        <div class="bg-white/80 backdrop-blur-md rounded-2xl shadow-xl border border-white/20 p-8">
+            <h2 class="text-xl font-bold text-text-primary mb-6">Group Details</h2>
+            <div class="grid grid-cols-2 gap-6 mb-6">
+                <div>
+                    <p class="text-text-secondary text-xs uppercase tracking-wide mb-1">Weekly Amount</p>
+                    <p class="text-green-600 font-bold text-xl">₵{{ group.weekly_amount }}</p>
+                </div>
+                <div>
+                    <p class="text-text-secondary text-xs uppercase tracking-wide mb-1">Members</p>
+                    <p class="text-text-primary font-bold text-xl">{{ group.memberships.count() }} / {{ group.cycle_size }}</p>
+                </div>
+                <div>
+                    <p class="text-text-secondary text-xs uppercase tracking-wide mb-1">Duration</p>
+                    <p class="text-accent-600 font-bold text-xl">{{ group.cycle_size }} weeks</p>
+                </div>
+                <div>
+                    <p class="text-text-secondary text-xs uppercase tracking-wide mb-1">Total Payout</p>
+                    <p class="text-green-600 font-bold text-xl">₵{{ group.total_amount }}</p>
+                </div>
+            </div>
+            
+            {% if group.description %}
+            <div class="bg-gradient-to-r from-primary-500/10 to-accent-500/10 rounded-xl p-4">
+                <p class="text-text-primary text-sm leading-relaxed">{{ group.description }}</p>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Invitation Info Card -->
+        <div class="bg-gradient-to-r from-accent-500 to-accent-600 p-6 rounded-2xl text-white shadow-xl">
+            <div class="flex items-center mb-3">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span class="font-semibold">Invitation expires in {{ invitation.expires_at.strftime('%B %d, %Y at %I:%M %p') }}</span>
+            </div>
+            {% if invitation.invited_name %}
+            <p class="text-sm opacity-90">Invited by: {{ invitation.inviter.full_name }}</p>
+            {% endif %}
+        </div>
+
+        <!-- Join Form or Already Member -->
+        {% if existing_membership %}
+        <div class="bg-gradient-to-r from-green-500 to-green-600 p-8 rounded-2xl text-white text-center shadow-xl">
+            <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+            </div>
+            <h3 class="text-xl font-bold mb-2">You're Already a Member!</h3>
+            <p class="opacity-90 mb-6">You are already part of this Susu group.</p>
+            <a href="{{ url_for('dashboard.index') }}" class="bg-white/20 backdrop-blur-sm text-white px-6 py-3 rounded-xl font-semibold hover:bg-white/30 transition-all duration-200 flex items-center mx-auto w-fit">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                </svg>
+                Go to Dashboard
+            </a>
+        </div>
+        {% else %}
+        <div class="bg-white/80 backdrop-blur-md rounded-2xl shadow-xl border border-white/20 p-8">
+            <h2 class="text-xl font-bold text-text-primary mb-6 text-center">Ready to Join?</h2>
+            <form method="POST">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit" class="w-full bg-gradient-to-r from-primary-500 to-accent-500 text-white py-4 px-6 rounded-xl font-semibold text-lg hover:shadow-lg transform hover:scale-105 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2">
+                    Join Group
+                </button>
+            </form>
+        </div>
+        {% endif %}
+
+        <!-- Info Box -->
+        <div class="bg-white/80 backdrop-blur-md rounded-2xl shadow-xl border border-white/20 p-8">
+            <h4 class="text-lg font-bold mb-4 text-text-primary">How it works:</h4>
+            <div class="space-y-4">
+                <div class="flex items-start">
+                    <div class="w-6 h-6 bg-gradient-to-br from-primary-500 to-accent-500 text-white rounded-full flex items-center justify-center text-xs font-bold mr-3 mt-0.5">
+                        1
+                    </div>
+                    <span class="text-text-secondary text-sm">Each member contributes ₵{{ group.weekly_amount }} weekly</span>
+                </div>
+                <div class="flex items-start">
+                    <div class="w-6 h-6 bg-gradient-to-br from-primary-500 to-accent-500 text-white rounded-full flex items-center justify-center text-xs font-bold mr-3 mt-0.5">
+                        2
+                    </div>
+                    <span class="text-text-secondary text-sm">One member receives the full payout each week</span>
+                </div>
+                <div class="flex items-start">
+                    <div class="w-6 h-6 bg-gradient-to-br from-primary-500 to-accent-500 text-white rounded-full flex items-center justify-center text-xs font-bold mr-3 mt-0.5">
+                        3
+                    </div>
+                    <span class="text-text-secondary text-sm">You'll receive ₵{{ group.total_amount }} when it's your turn</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 
