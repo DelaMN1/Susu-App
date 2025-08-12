@@ -16,10 +16,12 @@ class User(UserMixin, db.Model):
     __tablename__ = 'users'
     
     id = db.Column(db.Integer, primary_key=True)
+    supabase_id = db.Column(db.String(255), unique=True, nullable=True)  # Link to Supabase auth
+    username = db.Column(db.String(50), unique=True, nullable=False)
     full_name = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     phone = db.Column(db.String(20), unique=True, nullable=False)
-    password_hash = db.Column(db.String(256), nullable=False)
+    password_hash = db.Column(db.String(256), nullable=True)  # Made nullable for Supabase auth
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     
@@ -40,7 +42,19 @@ class User(UserMixin, db.Model):
     
     def verify_password(self, password):
         """Check if password matches the hashed password"""
+        if not self.password_hash:
+            return False
         return check_password_hash(self.password_hash, password)
+    
+    @classmethod
+    def find_by_supabase_id(cls, supabase_id):
+        """Find user by Supabase ID"""
+        return cls.query.filter_by(supabase_id=supabase_id).first()
+    
+    @classmethod
+    def find_by_email(cls, email):
+        """Find user by email"""
+        return cls.query.filter_by(email=email.lower()).first()
     
     def __repr__(self):
         return f'<User {self.full_name}>'

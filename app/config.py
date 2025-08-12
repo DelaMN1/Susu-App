@@ -11,6 +11,11 @@ class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'dev-key-for-development-only'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     
+    # Supabase configuration
+    SUPABASE_URL = os.environ.get('SUPABASE_URL')
+    SUPABASE_ANON_KEY = os.environ.get('SUPABASE_ANON_KEY')
+    SUPABASE_SERVICE_ROLE_KEY = os.environ.get('SUPABASE_SERVICE_ROLE_KEY')
+    
     # Flask-Mail configuration (for future use)
     MAIL_SERVER = os.environ.get('MAIL_SERVER')
     MAIL_PORT = int(os.environ.get('MAIL_PORT') or 587)
